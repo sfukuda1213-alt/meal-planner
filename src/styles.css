@@ -1,0 +1,283 @@
+/* --- フォントのインポート --- */
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Noto+Sans+JP:wght@400;500&display=swap');
+
+/* --- CSS変数定義 (新しいカラーパレット) --- */
+:root {
+  --bg-color: #1a1d24;
+  --surface-color: #242831;
+  --primary-color: #00a99d; /* ティール */
+  --secondary-color: #ffab40; /* アンバー */
+  --text-color: #e1e1e6;
+  --text-muted-color: #9a9fa8;
+  --border-color: #393e4a;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --font-heading: 'Merriweather', serif;
+  --font-body: 'Noto Sans JP', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.dashboard {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1.5rem;
+}
+
+h1 {
+  font-family: var(--font-heading);
+  color: var(--text-color);
+  font-size: 2.5rem;
+  letter-spacing: 0.03em;
+}
+
+h2 {
+  font-family: var(--font-heading);
+  color: var(--text-color);
+  font-size: 1.6rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+h2 svg {
+  color: var(--primary-color);
+  width: 28px;
+  height: 28px;
+}
+
+h3 {
+  font-weight: 500;
+  color: var(--secondary-color);
+  font-size: 1.1rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.btn-primary, .btn-secondary, .btn-toggle {
+  border: none;
+  padding: 0.8rem 1.8rem;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(45deg, var(--primary-color), #00c2b2);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(0, 169, 157, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 20px rgba(0, 169, 157, 0.4);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+.btn-secondary:hover {
+  background-color: var(--primary-color);
+  color: var(--bg-color);
+}
+
+.btn-toggle {
+  background-color: var(--border-color);
+  color: var(--text-muted-color);
+  padding: 0.4rem 1rem;
+  font-size: 0.8rem;
+}
+.btn-toggle:hover {
+  background-color: var(--primary-color);
+  color: #fff;
+}
+
+.card {
+  background-color: var(--surface-color);
+  border-radius: 16px;
+  padding: 2rem;
+  border: 1px solid var(--border-color);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.main-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2.5rem;
+}
+
+.weekly-plan ul, .history-container ul, .shopping-category ul {
+  list-style: none;
+}
+
+.weekly-plan li {
+  display: flex;
+  align-items: center;
+  padding: 1rem 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  gap: 1.5rem;
+}
+.weekly-plan li:last-child { border-bottom: none; }
+
+.weekly-plan li.completed .recipe-name {
+  text-decoration: line-through;
+  color: var(--text-muted-color);
+  opacity: 0.7;
+}
+
+.weekly-plan input[type="checkbox"] {
+  transform: scale(1.3);
+  accent-color: var(--primary-color);
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+}
+
+.day {
+  font-weight: 500;
+  color: var(--text-muted-color);
+  min-width: 3rem;
+}
+
+.recipe-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  flex-grow: 1;
+}
+
+.recipe-name {
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.recipe-info:hover .recipe-name {
+  color: var(--primary-color);
+}
+
+.genre-tag {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  color: #fff;
+  min-width: 45px;
+  text-align: center;
+}
+
+.genre-tag.和食 { background-color: #e53935; } /* Red */
+.genre-tag.洋食 { background-color: #3949ab; } /* Blue */
+.genre-tag.中華 { background-color: #fdd835; color: #333;} /* Yellow */
+.genre-tag.その他 { background-color: #757575; } /* Gray */
+
+.side-panel { display: flex; flex-direction: column; gap: 2.5rem; }
+
+.toggle-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.list-container, .history-container {
+  max-height: 40vh;
+  overflow-y: auto;
+  padding-right: 10px;
+  margin-top: -1rem; /* Adjust space */
+}
+.list-container::-webkit-scrollbar, .history-container::-webkit-scrollbar, .modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+.list-container::-webkit-scrollbar-thumb, .history-container::-webkit-scrollbar-thumb, .modal-content::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 10px;
+}
+
+.shopping-category ul li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-muted-color);
+  font-size: 0.9rem;
+}
+.history-week { margin-bottom: 1rem; }
+.history-week h4 { font-size: 1rem; color: var(--text-muted-color); border-bottom: none; }
+.history-week ul li { font-size: 0.9rem; padding: 0.3rem 0; color: var(--text-color); }
+
+/* --- Modal Styles --- */
+.modal-backdrop {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(26, 29, 36, 0.8);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 1000; backdrop-filter: blur(8px);
+}
+.modal-content {
+  background-color: var(--surface-color);
+  padding: 2.5rem 3rem;
+  border-radius: 20px;
+  width: 90%; max-width: 800px; max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 15px 40px var(--shadow-color);
+  animation: modal-fade-in 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  position: relative;
+}
+.modal-content h2 { font-family: var(--font-heading); color: var(--primary-color); font-size: 2rem; text-align: center; margin-bottom: 2rem; }
+.modal-genre { position: absolute; top: 1.5rem; left: 1.5rem; }
+.modal-body {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 3rem;
+  margin: 1.5rem 0;
+}
+.ingredients ul { list-style: none; }
+.ingredients li { display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px dashed var(--border-color); }
+.steps ol { padding-left: 1.5rem; }
+.steps li { margin-bottom: 1rem; padding-left: 0.5rem; }
+.modal-content .btn-secondary { display: block; margin: 2rem auto 0; }
+
+@keyframes modal-fade-in {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@media (max-width: 992px) {
+  .main-grid { grid-template-columns: 1fr; }
+  .modal-body { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  h1 { font-size: 1.8rem; }
+  header { flex-direction: column; gap: 1.5rem; }
+  .dashboard { padding: 2rem 1rem; }
+  .card { padding: 1.5rem; }
+  .modal-content { padding: 2rem 1.5rem; }
+}
