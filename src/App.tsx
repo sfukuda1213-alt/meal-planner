@@ -27,7 +27,7 @@ type WeeklyMeal = {
   completed: boolean;
 };
 
-// --- レシピデータ (40種類) ---
+// --- レシピデータ (全40種類) ---
 const recipePool: Recipe[] = [
   // 和食
   { name: "鶏もも肉の照り焼き", genre: "和食", ingredients: [{ item: "鶏もも肉", amount: 250, unit: "g", category: "肉" }, { item: "醤油", amount: 2, unit: "大さじ", category: "調味料" }, { item: "みりん", amount: 2, unit: "大さじ", category: "調味料" }], steps: ["鶏肉に片栗粉をまぶす。", "フライパンで皮目から焼く。", "醤油、みりん、酒、砂糖を混ぜたタレを絡める。"] },
@@ -89,30 +89,77 @@ const generateNewWeek = (): WeeklyMeal[] => {
   }));
 };
 
+// --- Appコンポーネント ---
 export default function App() {
-  const [weeklyMeals, setWeeklyMeals] = useState<WeeklyMeal[]>([]);
-  const [history, setHistory] = useState<WeeklyMeal[][]>([]);
+  const [weeklyMeals, setWeeklyMeals] = useState<WeeklyMeal[]>(() => {
+    const savedMeals = localStorage.getItem('weeklyMeals');
+    return savedMeals ? JSON.parse(savedMeals) : generateNewWeek();
+  });
+  const [history, setHistory] = useState<WeeklyMeal[][]>(() => {
+    const savedHistory = localStorage.getItem('mealHistory');
+    return savedHistory ? JSON.parse(savedHistory) : [];
+  });
+  const [checkedItems, setCheckedItems] = useState<Set<string>>(() => {
+    const savedCheckedItems = localStorage.getItem('checkedItems');
+    return savedCheckedItems ? new Set(JSON.parse(savedCheckedItems)) : new Set();
+  });
+
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [showShoppingList, setShowShoppingList] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
 
   useEffect(() => {
-    setWeeklyMeals(generateNewWeek());
-  }, []);
+    localStorage.setItem('weeklyMeals', JSON.stringify(weeklyMeals));
+  }, [weeklyMeals]);
 
-  const handleGenerateNewWeek = () => {
-    if (weeklyMeals.length > 0) {
+  useEffect(() => {
+    localStorage.setItem('mealHistory', JSON.stringify(history));
+  }, [history]);
+
+  useEffect(() => {
+    localStorage.setItem('checkedItems', JSON.stringify(Array.from(checkedItems)));
+  }, [checkedItems]);
+
+
+  const handleGenerateNewWeek = (isNew: boolean = true) => {
+    if (isNew && weeklyMeals.length > 0) {
       setHistory(prev => [weeklyMeals, ...prev]);
     }
-    setWeeklyMeals(generateNewWeek());
+    const newWeek = generateNewWeek();
+    setWeeklyMeals(newWeek);
+    setCheckedItems(new Set());
   };
 
   const handleToggleComplete = (day: string) => {
+    const toggledMeal = weeklyMeals.find(meal => meal.day === day);
+    if (!toggledMeal) return;
+
+    const isLastDay = day === 'Sun';
+    const isCompleting = !toggledMeal.completed;
+
     setWeeklyMeals(currentMeals =>
       currentMeals.map(meal =>
         meal.day === day ? { ...meal, completed: !meal.completed } : meal
       )
     );
+    
+    if (isLastDay && isCompleting) {
+      setTimeout(() => {
+        handleGenerateNewWeek();
+      }, 500);
+    }
+  };
+
+  const handleToggleCheckedItem = (itemName: string) => {
+    setCheckedItems(prevCheckedItems => {
+      const newCheckedItems = new Set(prevCheckedItems);
+      if (newCheckedItems.has(itemName)) {
+        newCheckedItems.delete(itemName);
+      } else {
+        newCheckedItems.add(itemName);
+      }
+      return newCheckedItems;
+    });
   };
 
   const shoppingList = useMemo(() => {
@@ -139,9 +186,6 @@ export default function App() {
     <div className="dashboard">
       <header>
         <h1>Weekly Meal Planner</h1>
-        <button onClick={handleGenerateNewWeek} className="btn-primary">
-          Generate New Week
-        </button>
       </header>
       <main>
         <div className="main-grid">
@@ -172,8 +216,13 @@ export default function App() {
                         <h3>{category}</h3>
                         <ul>
                         {items.map(ing => (
-                            <li key={ing.item}>
-                            {ing.item}: {ing.amount}{ing.unit}
+                            <li key={ing.item} className={checkedItems.has(ing.item) ? "completed-item" : ""}>
+                              <input
+                                type="checkbox"
+                                checked={checkedItems.has(ing.item)}
+                                onChange={() => handleToggleCheckedItem(ing.item)}
+                              />
+                              <span>{ing.item}: {ing.amount}{ing.unit}</span>
                             </li>
                         ))}
                         </ul>
